@@ -1,0 +1,1 @@
+INSERT INTO airport (name) VALUES ("Amsterdam");

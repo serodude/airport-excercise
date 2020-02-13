@@ -1,0 +1,84 @@
+{{>header}}
+
+<!-- Custom styles for this template -->
+
+
+<meta name="description" content="Narnia Tourism Overview">
+<meta name="author" content="Joey de Groot">
+
+<title>Narnia Tourism view</title>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row bg-white border rounded border-light my-3">
+            <div class="col-12">
+                <table id="dataTable" class="display">
+                </table>
+
+                <button id="addBtn" class="btn btn-primary">Add new</button>
+                <button id="refreshBtn" class="btn">Refresh</button>
+
+                <!-- MODAL-->
+                <div class="modal fade" id="postDetail" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title" id="modal-title">Edit a Visitor</h3>
+                                <button type="button" class="close" onclick="deselect()" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="modalForm" class="needs-validation" enctype='text/plain'>
+
+
+                                    <div class="form-group">
+                                        <label for="id">ID:</label>
+                                        <input type='text' class="form-control" name='id' id="id" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="first_name"> Firstname: </label>
+                                        <input type='text' class="form-control" name='firstName' id="firstName" pattern="^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="last_name"> Lastname:</label>
+                                        <input type='text' class="form-control" name='lastName' id="lastName" pattern="^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="birthdate"> Birthdate:</label>
+                                        <input type='text' class="form-control" name='birthdate' id="birthdate" placeholder="yyyy-MM-dd" pattern="^[12]\d{3}-((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1])|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="city"> City:</label>
+                                        <input type='text' class="form-control" name='city' id="city" pattern="^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$">
+                                    </div>
+                                    <div class="form-check">
+                                        <input class='form-check-input' type="checkbox" value="" name='is_visiting' id="isVisiting">
+                                        <label class="form-check-label" for="isVisiting"> Is visiting:</label>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success" id="btnsubmit">Submit</button>
+
+                                <!-- this is the first, normal Delete button NOT TO BE CONFUSED WITH the popover-->
+                                <!-- in fact, this will later contain a Popover -->
+                                <button type="button" id="deleteButton" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-default" id="btnclose" onclick="deselect()" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{>footer}}
+
+    <!-- ADD CUSTOM JS FILES HERE -->
+    <script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="js/visitorView.js"></script>
+</body>
+
+</html>
