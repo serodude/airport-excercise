@@ -241,23 +241,37 @@ $("#airport").on("change", function() {
 });
 
 function flyto(id) {
-    console.log("fly to " + id);
-    if (id == currentRecord.airport.id) {
-        alert("This plane is already at the given airport");
-        return;
-    }
-    if (currentRecord.fuel < 2) {
-        alert("This plane has not enough fuel left to flye");
-        return;
-    }
 
     $.ajax({
-        url: "http://localhost:8080/api/airports/" + id,
+        url: "http://localhost:8080/api/planes/flyto/" + currentRecord.id + "/" + id,
         type: "get",
-        success: function(result) {
-            flyPlane(result);
+        success: function() {
+            getData();
+            deselect();
+            $('#postDetail').modal('toggle');
+        },
+        error: function(result) {
+            alert(result.responseJSON.msg);
         }
     });
+
+    // console.log("fly to " + id);
+    // if (id == currentRecord.airport.id) {
+    //     alert("This plane is already at the given airport");
+    //     return;
+    // }
+    // if (currentRecord.fuel < 2) {
+    //     alert("This plane has not enough fuel left to flye");
+    //     return;
+    // }
+
+    // $.ajax({
+    //     url: "http://localhost:8080/api/airports/" + id,
+    //     type: "get",
+    //     success: function(result) {
+    //         flyPlane(result);
+    //     }
+    // });
 }
 
 function flyPlane(airport) {
