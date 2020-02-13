@@ -1,4 +1,6 @@
-let api = 'http://localhost:8080/api/visitors';
+let api = 'http://localhost:8080/api/planes';
+let selectedAirport;
+let currentRecord;
 
 $(document).ready(function() {
     initDataTable(api);
@@ -8,13 +10,13 @@ $(document).ready(function() {
     $("#deleteButton").click();
 
     $("#addBtn").on('click', function() {
-        document.getElementById("modal-title").innerHTML = "Add a new Visitor";
+        document.getElementById("modal-title").innerHTML = "Add a new Plane";
         document.getElementById("modalForm").reset();
         $("#btnsubmit").attr('onclick', 'handleNewSubmit();');
         $('#postDetail').modal('toggle');
         $("#isVisiting").attr('checked', false);
         $('#modalForm').removeClass("was-validated");
-
+        getAirport(1);
     });
 });
 
@@ -22,11 +24,15 @@ function initDataTable(api) {
 
     columns = [
         { "data": "id", "title": "id" },
-        { "data": "firstName", "title": "firstname" },
-        { "data": "lastName", "title": "lastname" },
-        { "data": "birthdate", "title": "date of birth" },
-        { "data": "city", "title": "city" },
-        { "data": "visiting", "title": "is visiting" }
+        { "data": "name", "title": "Name" },
+        { "data": "fuel", "title": "Fuel" },
+        {
+            "data": "airport",
+            "title": "Airport",
+            "render": function(data) {
+                return data['name']
+            }
+        }
     ];
 
     // how simple it is to create a datatable :-)
@@ -55,6 +61,30 @@ function initDataTable(api) {
         getSingleRecord(data.id, api);
 
         $('#postDetail').modal('toggle');
+    });
+}
+
+function getFormData() {
+    let formObj = {
+        id: parseInt($("#id").val()),
+        name: $("#name").val(),
+        fuel: parseInt($("#fuel").val()),
+        airport: selectedAirport,
+
+    };
+    console.log(formObj);
+    return formObj;
+}
+
+function getAirport(id) {
+    $.ajax({
+        url: "http://localhost:8080/api/airports/" + id,
+        type: "get",
+        success: function(result) {
+            $("#btnsubmit").attr('disabled', false);
+            selectedAirport = result;
+            return result;
+        }
     });
 }
 
@@ -87,11 +117,7 @@ function getSingleRecord(id, api) {
 function submitNew() {
     console.log("Add new room");
 
-    var formData = $("#modalForm").serializeArray().reduce(function(result, object) { result[object.name] = object.value; return result }, {});
-    for (var key in formData) {
-        if (formData[key] == "" || formData == null) delete formData[key];
-    }
-    formData["visiting"] = $("#isVisiting").is(":checked");
+    var formData = getFormData();
 
     console.log(JSON.stringify(formData));
 
@@ -101,7 +127,6 @@ function submitNew() {
         contentType: "application/json",
         success: getData,
         error: function(error) {
-            alert("There are already 5 people visiting!");
             getData();
             console.log(error);
         }
@@ -140,27 +165,18 @@ function fillModal(record) {
     $('#modalForm').removeClass("was-validated");
     // fill the modal
     $("#id").val(record.id);
-    $("#firstName").val(record.firstName);
-    $("#lastName").val(record.lastName);
-    $("#birthdate").val(record.birthdate);
-    $("#city").val(record.city);
-    $("#isVisiting").attr('checked', record.visiting);
-    //val(record.visiting);
+    $("#name").val(record.name);
+    $("#fuel").val(record.fuel);
+    $("#airport").val(record.airport.id);
 
-
+    selectedAirport = record.airport;
+    currentRecord = record;
 }
 
 function submitEdit(id, api) {
 
     // shortcut for filling the formData as a JavaScript object with the fields in the form
-    var formData = $("#modalForm").serializeArray().reduce(function(result, object) { result[object.name] = object.value; return result }, {});
-    console.log("Formdata =>");
-    console.log(formData);
-    for (var key in formData) {
-        if (formData[key] == "" || formData == null) delete formData[key];
-    }
-
-    formData["visiting"] = $("#isVisiting").is(":checked");
+    var formData = getFormData();
 
     console.log("Updating row with id:" + id)
     $.ajax({
@@ -170,7 +186,6 @@ function submitEdit(id, api) {
         contentType: "application/json",
         success: getData,
         error: function(error) {
-            alert("There are already 5 people visiting!");
             console.log(error);
         }
     });
@@ -217,5 +232,72 @@ function handleNewSubmit() {
             submitNew();
         }
         form.classList.add('was-validated');
+    });
+}
+
+$("#airport").on("change", function() {
+    $("#btnsubmit").attr('disabled', true);
+    getAirport($(this).val());
+});
+
+function flyto(id) {
+    console.log("fly to " + id);
+    if (id == currentRecord.airport.id) {
+        alert("This plane is already at the given airport");
+        return;
+    }
+    if (currentRecord.fuel < 2) {
+        alert("This plane has not enough fuel left to flye");
+        return;
+    }
+
+    $.ajax({
+        url: "http://localhost:8080/api/airports/" + id,
+        type: "get",
+        success: function(result) {
+            flyPlane(result);
+        }
+    });
+}
+
+function flyPlane(airport) {
+    var formData = currentRecord;
+    formData.airport = airport;
+    formData.fuel -= 2;
+
+    updatePlane(formData);
+
+    deselect();
+    $('#postDetail').modal('toggle');
+}
+
+function refuel() {
+    console.log("do some refueling");
+    if (currentRecord.fuel == 5) {
+        alert("Plane is already full of fuel!");
+        return;
+    }
+    // shortcut for filling the formData as a JavaScript object with the fields in the form
+    var formData = currentRecord;
+    formData.fuel = 5;
+
+    updatePlane(formData);
+
+    deselect();
+    $('#postDetail').modal('toggle');
+
+}
+
+function updatePlane(plane) {
+    console.log("Updating row with id:" + id)
+    $.ajax({
+        url: api + "/" + currentRecord.id,
+        type: "put",
+        data: JSON.stringify(plane),
+        contentType: "application/json",
+        success: getData,
+        error: function(error) {
+            console.log(error);
+        }
     });
 }

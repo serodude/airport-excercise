@@ -3,6 +3,8 @@ package com.capgemini.airport.api;
 import com.capgemini.airport.model.Airport;
 import com.capgemini.airport.model.Plane;
 import com.capgemini.airport.persistence.PlaneRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -22,9 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -104,14 +108,46 @@ class PlaneControllerTest {
     }
 
     @Test
-    void createPlane() {
+    void createPlane() throws Exception {
+        Plane newPlane = createDummyPlane(4L, "Pete plane", 5, airports.get(1));
+        when(planeRepository.save(any(Plane.class))).thenReturn(newPlane);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonObj = mapper.writeValueAsString(newPlane);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/planes/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonObj))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(newPlane.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(newPlane.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fuel").value(newPlane.getFuel()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void updatePlane() {
+    void updatePlane() throws Exception {
+        Plane updatePlane = createDummyPlane(3L, "Vliegtuig", 3, airports.get(1));
+        when(planeRepository.save(any(Plane.class))).thenReturn(updatePlane);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonObj = mapper.writeValueAsString(updatePlane);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/planes/3")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonObj))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(updatePlane.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(updatePlane.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.fuel").value(updatePlane.getFuel()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void deletePlane() {
+    void deletePlane() throws Exception {
+//        doNothing().when(planeRepository);
+//        this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/plane/1"))
+//                .andDo(MockMvcResultHandlers.print())
+//                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 }

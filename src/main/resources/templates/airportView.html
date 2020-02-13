@@ -6,7 +6,7 @@
 <meta name="description" content="Narnia Tourism Overview">
 <meta name="author" content="Joey de Groot">
 
-<title>Narnia Tourism view</title>
+<title>Airport view</title>
 
 </head>
 
@@ -25,7 +25,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h3 class="modal-title" id="modal-title">Edit a Visitor</h3>
+                                <h3 class="modal-title" id="modal-title">Edit a plane</h3>
                                 <button type="button" class="close" onclick="deselect()" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
@@ -37,29 +37,41 @@
                                         <input type='text' class="form-control" name='id' id="id" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label for="first_name"> Firstname: </label>
-                                        <input type='text' class="form-control" name='firstName' id="firstName" pattern="^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$" required>
+                                        <label for="name">Name: </label>
+                                        <input type='text' class="form-control" name='name' id="name" pattern="^[a-zA-Z0-9]+(([',. -][a-zA-Z0-9 ])?[a-zA-Z0-9]*)*$" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="last_name"> Lastname:</label>
-                                        <input type='text' class="form-control" name='lastName' id="lastName" pattern="^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$" required>
+                                        <label for="fuel"> Fuel:</label>
+                                        <input type='number' class="form-control" name='fuel' id="fuel" pattern="^[0-5]{1}$" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="birthdate"> Birthdate:</label>
-                                        <input type='text' class="form-control" name='birthdate' id="birthdate" placeholder="yyyy-MM-dd" pattern="^[12]\d{3}-((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1])|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="city"> City:</label>
-                                        <input type='text' class="form-control" name='city' id="city" pattern="^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$">
-                                    </div>
-                                    <div class="form-check">
-                                        <input class='form-check-input' type="checkbox" value="" name='is_visiting' id="isVisiting">
-                                        <label class="form-check-label" for="isVisiting"> Is visiting:</label>
+                                        <!--DROPDOWN-->
+                                        <label for="airport">Airport:</label>
+                                        <select class="form-control form-control-sm" name='airprort' id='airport'>
+                                            <option value="1">Amsterdam</option>
+                                            <option value="2">London</option>
+                                            <option value="3">Parijs</option>
+                                            <option value="4">Stockholm</option>
+                                            <option value="5">Berlijn</option>
+                                        </select>
                                     </div>
                                 </form>
 
                             </div>
                             <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" id="refuel" onclick="refuel()">Refuel</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="flyto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Fly to
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" onclick="flyto(1)">Amsterdam</a>
+                                        <a class="dropdown-item" onclick="flyto(2)">London</a>
+                                        <a class="dropdown-item" onclick="flyto(3)">Parijs</a>
+                                        <a class="dropdown-item" onclick="flyto(4)">Stockholm</a>
+                                        <a class="dropdown-item" onclick="flyto(5)">Berlijn</a>
+                                    </div>
+                                </div>
                                 <button type="submit" class="btn btn-success" id="btnsubmit">Submit</button>
 
                                 <!-- this is the first, normal Delete button NOT TO BE CONFUSED WITH the popover-->
@@ -78,7 +90,7 @@
     <!-- ADD CUSTOM JS FILES HERE -->
     <script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="js/visitorView.js"></script>
+    <script src="js/airportView.js"></script>
 </body>
 
 </html>

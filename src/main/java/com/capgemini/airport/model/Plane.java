@@ -12,7 +12,7 @@ public class Plane {
 
     private int fuel;
 
-    @ManyToOne(cascade=CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "airportID")
     private Airport airport;
 
@@ -40,7 +40,7 @@ public class Plane {
     }
 
     public void setFuel(int fuel) {
-        this.fuel = Math.max(fuel, 5);
+        this.fuel = Math.max(0, Math.min(fuel, 5));
     }
 
     public Airport getAirport() {

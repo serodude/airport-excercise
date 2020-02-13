@@ -12,7 +12,7 @@ public class Airport {
 
     private String name;
 
-    @OneToMany(mappedBy = "airport")
+    @OneToMany(mappedBy = "airport", cascade=CascadeType.ALL)
     private List<Plane> planes;
 
     public Airport() {
@@ -32,10 +32,6 @@ public class Airport {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Plane> getPlanes() {
-        return planes;
     }
 
     public void setPlanes(List<Plane> planes) {
