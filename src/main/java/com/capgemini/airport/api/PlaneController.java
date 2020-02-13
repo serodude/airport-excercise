@@ -76,4 +76,21 @@ public class PlaneController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Either the given plane or airport does not exist."));
         }
     }
+
+    @GetMapping("/refuel/{id}")
+    public ResponseEntity<?> refuelPlane(@PathVariable long id) {
+        System.out.println("refuel plane");
+        Optional<Plane> result = planeRepository.findById(id);
+        if (result.isPresent()) {
+            Plane plane = result.get();
+            if (plane.getFuel() >= 5) {
+                return ResponseEntity.badRequest().body(new Message("Plane is already full of fuel "));
+            } else {
+                plane.setFuel(5);
+                return ResponseEntity.ok(planeRepository.save(plane));
+            }
+        } else {
+            return ResponseEntity.badRequest().body(new Message("ERROR 404 plane not found"));
+        }
+    }
 }

@@ -254,64 +254,19 @@ function flyto(id) {
             alert(result.responseJSON.msg);
         }
     });
-
-    // console.log("fly to " + id);
-    // if (id == currentRecord.airport.id) {
-    //     alert("This plane is already at the given airport");
-    //     return;
-    // }
-    // if (currentRecord.fuel < 2) {
-    //     alert("This plane has not enough fuel left to flye");
-    //     return;
-    // }
-
-    // $.ajax({
-    //     url: "http://localhost:8080/api/airports/" + id,
-    //     type: "get",
-    //     success: function(result) {
-    //         flyPlane(result);
-    //     }
-    // });
-}
-
-function flyPlane(airport) {
-    var formData = currentRecord;
-    formData.airport = airport;
-    formData.fuel -= 2;
-
-    updatePlane(formData);
-
-    deselect();
-    $('#postDetail').modal('toggle');
 }
 
 function refuel() {
-    console.log("do some refueling");
-    if (currentRecord.fuel == 5) {
-        alert("Plane is already full of fuel!");
-        return;
-    }
-    // shortcut for filling the formData as a JavaScript object with the fields in the form
-    var formData = currentRecord;
-    formData.fuel = 5;
-
-    updatePlane(formData);
-
-    deselect();
-    $('#postDetail').modal('toggle');
-
-}
-
-function updatePlane(plane) {
-    console.log("Updating row with id:" + id)
     $.ajax({
-        url: api + "/" + currentRecord.id,
-        type: "put",
-        data: JSON.stringify(plane),
-        contentType: "application/json",
-        success: getData,
-        error: function(error) {
-            console.log(error);
+        url: "http://localhost:8080/api/planes/refuel/" + currentRecord.id,
+        type: "get",
+        success: function() {
+            getData();
+            deselect();
+            $('#postDetail').modal('toggle');
+        },
+        error: function(result) {
+            alert(result.responseJSON.msg);
         }
     });
 }
