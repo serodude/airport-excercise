@@ -73,7 +73,7 @@ public class PlaneController {
             }
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Either the given plane or airport does not exist."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("Either the given plane or airport does not exist."));
         }
     }
 
@@ -90,7 +90,7 @@ public class PlaneController {
                 return ResponseEntity.ok(planeRepository.save(plane));
             }
         } else {
-            return ResponseEntity.badRequest().body(new Message("ERROR 404 plane not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Message("ERROR 404 plane not found"));
         }
     }
 }
